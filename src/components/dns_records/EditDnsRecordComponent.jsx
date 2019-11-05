@@ -27,20 +27,15 @@ class EditDnsRecordComponent extends Component {
     }
 
     loadRecord() {
-        this.setState(
-            {
-                zone: 'test.example.com',
-                name: '',
-                type: 'A',
-                ttl: '',
-                answer: '',
-                message: null
-            }
-        )
+
+        let record = JSON.parse(localStorage.getItem('record')); 
+        this.setState({...record, message: null}); 
     }
 
     saveRecord() {
-
+        // enviar para api
+        localStorage.removeItem('record'); 
+        this.props.history.push('/records')
     }
 
     onChange = (e) =>

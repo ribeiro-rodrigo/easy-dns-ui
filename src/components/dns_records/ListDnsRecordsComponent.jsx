@@ -22,6 +22,7 @@ class ListDnsRecordsComponent extends Component {
         this.reloadRecordsList = this.reloadRecordsList.bind(this);
         this.addRecord = this.addRecord.bind(this);
         this.editRecord = this.editRecord.bind(this);
+        this.deleteRecord = this.deleteRecord.bind(this); 
     }
 
     async componentDidMount() {
@@ -30,6 +31,7 @@ class ListDnsRecordsComponent extends Component {
 
     async reloadRecordsList() {
         const zones = await EasyDnsApiService.findAllZones();
+        localStorage.setItem('zones',JSON.stringify(zones)); 
         this.setState({
             zones: zones
         })
@@ -39,7 +41,20 @@ class ListDnsRecordsComponent extends Component {
         this.props.history.push('/add-record')
     }
 
-    editRecord(record) {
+    deleteRecord(zoneName,recordDeleted){
+        
+        //chamar api aqui 
+        
+        let zones = this.state.zones 
+        let zone = zones.filter(z => z.zone === zoneName).reduce((_, current) => current, null);
+        zone.records = zone.records.filter(record => record.name !== recordDeleted.name); 
+        this.setState({zones:zones}); 
+    }
+
+    editRecord(zoneName,record) { 
+        record.zone = zoneName 
+        localStorage.removeItem('record');
+        localStorage.setItem('record',JSON.stringify(record))
         this.props.history.push('/edit-record');
     }
 
@@ -67,10 +82,10 @@ class ListDnsRecordsComponent extends Component {
                                     <TableCell align="right">{record.type}</TableCell>
                                     <TableCell align="right">{record.ttl}</TableCell>
                                     <TableCell align="right">{record.answer}</TableCell>
-                                    <TableCell align="right" onClick={() => this.editRecord(record)}>
+                                    <TableCell align="right" onClick={() => this.editRecord(row.zone,record)}>
                                         <CreateIcon />
                                     </TableCell>
-                                    <TableCell align="right">
+                                    <TableCell align="right" onClick={() => this.deleteRecord(row.zone,record)}>
                                         <DeleteIcon />
                                     </TableCell>
                                 </TableRow>
