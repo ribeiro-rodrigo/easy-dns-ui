@@ -19,7 +19,7 @@ class ListDnsRecordsComponent extends Component {
     render() {
         return (
             <div>
-                <Typography variant="h4" style={style}>Easy DNS</Typography>
+                <Typography variant="h4" style={style}>DNS Records</Typography>
                 <Button variant="contained" color="primary">Add Record</Button>
                 <Table>
                     <TableHead>
@@ -42,6 +42,7 @@ class ListDnsRecordsComponent extends Component {
 }
 
 const style = {
+    marginTop: '20px',
     display: 'flex',
     justifyContent: 'center'
 }

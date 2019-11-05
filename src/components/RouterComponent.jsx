@@ -4,7 +4,7 @@ import React from 'react';
 import ListDnsRecordsComponent from './dns_records/ListDnsRecordsComponent'
 
 const AppRouter = () => (
-    <div>
+    <div style={style}>
         <Router>
             <Switch>
                 <Route path="/" exact component={ListDnsRecordsComponent} />
