@@ -4,12 +4,13 @@ import React from 'react';
 import ListDnsRecordsComponent from './dns_records/ListDnsRecordsComponent'
 import AddDnsRecordComponent from './dns_records/AddDnsRecordComponent'
 import EditDnsRecordComponent from './dns_records/EditDnsRecordComponent'
+import LoginComponent from './login/LoginComponent';
 
 const AppRouter = () => (
     <div style={style}>
         <Router>
             <Switch>
-                <Route path="/" exact component={ListDnsRecordsComponent} />
+                <Route path="/" exact component={LoginComponent} />
                 <Route path="/records" exact component={ListDnsRecordsComponent} />
                 <Route path="/add-record" component={AddDnsRecordComponent} />
                 <Route path="/edit-record" component={EditDnsRecordComponent} />
