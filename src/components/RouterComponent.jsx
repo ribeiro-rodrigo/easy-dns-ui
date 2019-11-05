@@ -10,7 +10,7 @@ const AppRouter = () => (
     <div style={style}>
         <Router>
             <Switch>
-                <Route path="/" exact component={ListDnsRecordsComponent} />
+                <Route path="/" exact component={LoginComponent} />
                 <Route path="/records" exact component={ListDnsRecordsComponent} />
                 <Route path="/add-record" component={AddDnsRecordComponent} />
                 <Route path="/edit-record" component={EditDnsRecordComponent} />
