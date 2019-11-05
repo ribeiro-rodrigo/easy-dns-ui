@@ -21,6 +21,7 @@ class ListDnsRecordsComponent extends Component {
 
         this.reloadRecordsList = this.reloadRecordsList.bind(this);
         this.addRecord = this.addRecord.bind(this);
+        this.editRecord = this.editRecord.bind(this);
     }
 
     async componentDidMount() {
@@ -36,6 +37,10 @@ class ListDnsRecordsComponent extends Component {
 
     addRecord() {
         this.props.history.push('/add-record')
+    }
+
+    editRecord(record) {
+        this.props.history.push('/edit-record');
     }
 
     render() {
@@ -62,7 +67,7 @@ class ListDnsRecordsComponent extends Component {
                                     <TableCell align="right">{record.type}</TableCell>
                                     <TableCell align="right">{record.ttl}</TableCell>
                                     <TableCell align="right">{record.answer}</TableCell>
-                                    <TableCell align="right">
+                                    <TableCell align="right" onClick={() => this.editRecord(record)}>
                                         <CreateIcon />
                                     </TableCell>
                                     <TableCell align="right">
