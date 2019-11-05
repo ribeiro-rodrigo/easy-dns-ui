@@ -6,14 +6,31 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import CreateIcon from '@material-ui/icons/Create';
+import DeleteIcon from '@material-ui/icons/Delete';
+
+import EasyDnsApiService from '../../services/EasyDnsApiService'
 
 class ListDnsRecordsComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            records: [],
+            zones: [],
             message: null
         }
+
+        this.reloadRecordsList = this.reloadRecordsList.bind(this);
+    }
+
+    async componentDidMount() {
+        this.reloadRecordsList();
+    }
+
+    async reloadRecordsList() {
+        const zones = await EasyDnsApiService.findAllZones();
+        this.setState({
+            zones: zones
+        })
     }
 
     render() {
@@ -32,7 +49,23 @@ class ListDnsRecordsComponent extends Component {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-
+                        {this.state.zones.map(row => {
+                            return row.records.map(record => (
+                                <TableRow key={record.name}>
+                                    <TableCell component="th" scope="row">{row.zone}</TableCell>
+                                    <TableCell align="left">{record.name}</TableCell>
+                                    <TableCell align="right">{record.type}</TableCell>
+                                    <TableCell align="right">{record.ttl}</TableCell>
+                                    <TableCell align="right">{record.answer}</TableCell>
+                                    <TableCell align="right">
+                                        <CreateIcon />
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        <DeleteIcon />
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        })}
                     </TableBody>
                 </Table>
 
