@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -9,9 +9,11 @@ import Typography from '@material-ui/core/Typography';
 import CreateIcon from '@material-ui/icons/Create';
 import DeleteIcon from '@material-ui/icons/Delete';
 
+import ProtectedComponent from '../ProtectedComponent'
+
 import EasyDnsApiService from '../../services/EasyDnsApiService'
 
-class ListDnsRecordsComponent extends Component {
+class ListDnsRecordsComponent extends ProtectedComponent {
     constructor(props) {
         super(props);
         this.state = {

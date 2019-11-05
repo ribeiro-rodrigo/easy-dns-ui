@@ -12,10 +12,23 @@ class LoginComponent extends Component {
         }
 
         this.login = this.login.bind(this);
+        this.redirectToList = this.redirectToList.bind(this); 
+
+        if ( localStorage.getItem('token')){
+            this.redirectToList(); 
+        }
+        
+    }
+
+    redirectToList(){
+        window.location = '/records'
     }
 
     login() {
-
+        //autenticar na api aqui
+        localStorage.setItem('token','token'); 
+        this.redirectToList()
+        
     }
 
     onChange = (e) =>
@@ -25,8 +38,8 @@ class LoginComponent extends Component {
         return (
             <div>
                 <Container>
-                    <TextField type="text" placeholder="username" fullWidth margin="normal" />
-                    <TextField type="password" placeholder="password" fullWidth margin="normal" />
+                    <TextField name="username" type="text" placeholder="username" fullWidth margin="normal" onChange={this.onChange} value={this.state.username} />
+                    <TextField name="password" type="password" placeholder="password" fullWidth margin="normal" onChange={this.onChange} value={this.state.password} />
                     <div style={style}>
                         <Button variant="contained" color="primary" onClick={this.login}>Enter</Button>
                     </div>
