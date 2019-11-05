@@ -20,6 +20,7 @@ class ListDnsRecordsComponent extends Component {
         }
 
         this.reloadRecordsList = this.reloadRecordsList.bind(this);
+        this.addRecord = this.addRecord.bind(this);
     }
 
     async componentDidMount() {
@@ -33,11 +34,15 @@ class ListDnsRecordsComponent extends Component {
         })
     }
 
+    addRecord() {
+        this.props.history.push('/add-record')
+    }
+
     render() {
         return (
             <div>
                 <Typography variant="h4" style={style}>DNS Records</Typography>
-                <Button variant="contained" color="primary">Add Record</Button>
+                <Button variant="contained" color="primary" onClick={() => this.addRecord()}>Add Record</Button>
                 <Table>
                     <TableHead>
                         <TableRow>
