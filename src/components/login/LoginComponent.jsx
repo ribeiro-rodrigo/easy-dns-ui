@@ -28,13 +28,21 @@ class LoginComponent extends Component {
 
     async login() {
 
+        if (!this.state.username || !this.state.password) {
+            alert('Preencha usuário e senha.')
+            return
+        }
+
         try {
 
             const response = await EasyDnsApiService.authUser(this.state.username, this.state.password)
-            console.log(response)
             if (response.statusCode === 200) {
                 localStorage.setItem('token', response.content['access_token']);
                 this.redirectToList()
+            } else {
+                if (response.statusCode === 401) {
+                    alert('Usuário ou senha inválidos');
+                }
             }
         }
         catch (e) {
