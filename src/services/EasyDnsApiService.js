@@ -1,10 +1,4 @@
-var url = 'http://localhost:8081';
-var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NzMwMjc4MjcsIm5iZiI6MTU3MzAyNzgyNywianRpIjoiZTg3MWViZDEtMzVjYS00Njg3LWFjNmMtOTIwN2NkZjI3OGY5IiwiZXhwIjoxNTczMDMwMjI3LCJpZGVudGl0eSI6ImFkbWluIiwiZnJlc2giOmZhbHNlLCJ0eXBlIjoiYWNjZXNzIn0.xKSZtd324iNYGLMuiTJYJHzpQBYQJMDXq4JCE9FOKkY'
-const headers = new Headers({ 'Authorization': `Bearer ${token}` });
-let init = {
-    headers,
-    mode: 'cors'
-}
+var url = ``;
 
 class EasyDnsApiService {
 
@@ -39,7 +33,6 @@ class EasyDnsApiService {
     }
 
     static async editRecord(zoneName, record) {
-        console.log(zoneName, record)
         let headers = this._makeHeaders()
         headers.append('Content-Type', 'application/json')
 
@@ -56,7 +49,7 @@ class EasyDnsApiService {
         let headers = this._makeHeaders()
         headers.append('Content-Type', 'application/json')
 
-        init = {
+        let init = {
             ...init,
             method: 'POST',
             body: JSON.stringify({ username: username, password: password }),
