@@ -24,6 +24,20 @@ class EasyDnsApiService {
         return response.status
     }
 
+    static async saveRecord(zoneName, record) {
+
+        let headers = this._makeHeaders()
+        headers.append('Content-Type', 'application/json')
+
+        let init = this._makeInit();
+        init = { ...init, method: 'POST', body: JSON.stringify(record), headers }
+        let response = await fetch(`${url}/v1/dns/zones/${zoneName}/records`, init)
+
+        let json = response.status === 201 ? await response.json().then(data => data) : {}
+
+        return { statusCode: response.status, content: json }
+    }
+
     static async authUser(username, password) {
 
 

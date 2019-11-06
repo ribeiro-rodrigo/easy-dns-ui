@@ -30,13 +30,13 @@ class EditDnsRecordComponent extends ProtectedComponent {
 
     loadRecord() {
 
-        let record = JSON.parse(localStorage.getItem('record')); 
-        this.setState({...record, message: null}); 
+        let record = JSON.parse(localStorage.getItem('record'));
+        this.setState({ ...record, message: null });
     }
 
     saveRecord() {
         // enviar para api
-        localStorage.removeItem('record'); 
+        localStorage.removeItem('record');
         this.props.history.push('/records')
     }
 
@@ -55,7 +55,7 @@ class EditDnsRecordComponent extends ProtectedComponent {
                         <MenuItem value="test.example.com">test.example.com</MenuItem>
                         <MenuItem value="test2.example.com">test2.example.com</MenuItem>
                     </Select>
-                    <TextField type="text" placeholder="record name" fullWidth margin="normal"
+                    <TextField type="text" placeholder="record name without domain. Ex former host1" fullWidth margin="normal"
                         name="name" value={this.state.name} />
                     <InputLabel id="type">Type</InputLabel>
                     <Select name="type" labelId="type" id="type-select" value={this.state.type}
@@ -68,7 +68,7 @@ class EditDnsRecordComponent extends ProtectedComponent {
                     </Select>
                     <TextField type="text" placeholder="record ttl" fullWidth margin="normal"
                         name="ttl" value={this.state.ttl} />
-                    <TextField type="text" placeholder="answer" fullWidth margin="normal"
+                    <TextField type="text" placeholder="answer - If you are a CNAME you should not have the domain. Ex host2" fullWidth margin="normal"
                         name="answer" value={this.state.answer} />
                     <Button variant="contained" color="primary" onClick={this.saveRecord}>Save</Button>
                 </form>

@@ -8,6 +8,8 @@ import Typography from '@material-ui/core/Typography';
 
 import ProtectedComponent from '../ProtectedComponent'
 
+import EasyDnsApiService from '../../services/EasyDnsApiService'
+
 class AddDnsRecordComponent extends ProtectedComponent {
     constructor(props) {
         super(props);
@@ -17,7 +19,8 @@ class AddDnsRecordComponent extends ProtectedComponent {
             type: 'A',
             ttl: '',
             answer: '',
-            message: null
+            message: null,
+            zones: [{ 'zone': 'test.example.com' }]
         }
 
         this.saveRecord = this.saveRecord.bind(this);
@@ -29,10 +32,39 @@ class AddDnsRecordComponent extends ProtectedComponent {
     }
 
     loadZone() {
-        this.setState({ zone: 'test.example.com' })
+        let zones = localStorage.getItem('zones');
+        zones = JSON.parse(zones);
+        this.setState({ zone: zones[0].zone, zones })
     }
 
-    saveRecord() {
+    async saveRecord() {
+
+        if (!this.state.name || !this.state.answer) {
+            alert('Preencha todos os campos obrigatórios')
+            return
+        }
+
+        try {
+
+            let record = {
+                recordName: this.state.name,
+                recordType: this.state.type,
+                ttl: this.state.ttl ? parseInt(this.state.ttl) : 0,
+                answer: this.state.answer
+            }
+
+            let response = await EasyDnsApiService.saveRecord(this.state.zone, record)
+
+            if (response.statusCode !== 201) {
+                alert('Não foi possível gravar o registro no servidor');
+                return
+            }
+
+            this.props.history.push('/records')
+        }
+        catch (e) {
+            alert('Erro ao gravar registro')
+        }
 
     }
 
@@ -48,23 +80,27 @@ class AddDnsRecordComponent extends ProtectedComponent {
                     <InputLabel id="zone">Zone</InputLabel>
                     <Select name="zone" labelId="zone" id="zone-select" value={this.state.zone}
                         onChange={this.onChange} fullWidth>
-                        <MenuItem value="test.example.com">test.example.com</MenuItem>
-                        <MenuItem value="test2.example.com">test2.example.com</MenuItem>
+                        {
+                            this.state.zones.map(domain => (
+                                <MenuItem key={domain.zone} value={domain.zone}>{domain.zone}</MenuItem>
+                            ))
+                        }
+
                     </Select>
-                    <TextField type="text" placeholder="record name" fullWidth margin="normal"
-                        name="name" value={this.state.name} />
+                    <TextField type="text" placeholder="*record name without domain. Ex former host1" fullWidth margin="normal"
+                        name="name" value={this.state.name} onChange={this.onChange} />
                     <InputLabel id="type">Type</InputLabel>
                     <Select name="type" labelId="type" id="type-select" value={this.state.type}
                         onChange={this.onChange} fullWidth>
                         <MenuItem value="A">A</MenuItem>
                         <MenuItem value="CNAME">CNAME</MenuItem>
-                        <MenuItem value="MX">MX</MenuItem>
+                        <MenuItem value="MX">TX</MenuItem>
                         <MenuItem value="NS">NS</MenuItem>
                         <MenuItem value="AAAA">AAAA</MenuItem>
                     </Select>
-                    <TextField type="text" placeholder="record ttl" fullWidth margin="normal"
+                    <TextField type="number" onChange={this.onChange} placeholder="record ttl" fullWidth margin="normal"
                         name="ttl" value={this.state.ttl} />
-                    <TextField type="text" placeholder="answer" fullWidth margin="normal"
+                    <TextField type="text" onChange={this.onChange} placeholder="*answer - If you are a CNAME you should not have the domain. Ex host2" fullWidth margin="normal"
                         name="answer" value={this.state.answer} />
                     <Button variant="contained" color="primary" onClick={this.saveRecord}>Save</Button>
                 </form>
