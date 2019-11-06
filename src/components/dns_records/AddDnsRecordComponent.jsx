@@ -53,6 +53,8 @@ class AddDnsRecordComponent extends ProtectedComponent {
                 answer: this.state.answer
             }
 
+            record.recordName = this.removeDomain(this.state.zone, record.recordName)
+
             let response = await EasyDnsApiService.saveRecord(this.state.zone, record)
 
             if (response.statusCode !== 201) {
@@ -66,6 +68,10 @@ class AddDnsRecordComponent extends ProtectedComponent {
             alert('Erro ao gravar registro')
         }
 
+    }
+
+    removeDomain(zoneName, recordName){
+        return recordName.replace(`.${zoneName}`,"")
     }
 
     onChange = (e) =>
