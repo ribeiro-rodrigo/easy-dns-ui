@@ -96,7 +96,7 @@ class EditDnsRecordComponent extends ProtectedComponent {
                             ))
                         }
                     </Select>
-                    <TextField onChange={this.onChange} type="text" placeholder="record name without domain. Ex former host1" fullWidth margin="normal"
+                    <TextField disabled onChange={this.onChange} type="text" placeholder="record name without domain. Ex former host1" fullWidth margin="normal"
                         name="name" value={this.state.name} />
                     <InputLabel id="type">Type</InputLabel>
                     <Select name="type" labelId="type" id="type-select" value={this.state.type}
