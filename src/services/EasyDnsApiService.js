@@ -38,6 +38,18 @@ class EasyDnsApiService {
         return { statusCode: response.status, content: json }
     }
 
+    static async editRecord(zoneName, record) {
+        console.log(zoneName, record)
+        let headers = this._makeHeaders()
+        headers.append('Content-Type', 'application/json')
+
+        let init = this._makeInit();
+        init = { ...init, method: 'PUT', body: JSON.stringify(record), headers }
+        let response = await fetch(`${url}/v1/dns/zones/${zoneName}/records/${record.recordName}`, init)
+
+        return response.status
+    }
+
     static async authUser(username, password) {
 
 

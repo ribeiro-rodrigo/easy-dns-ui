@@ -8,6 +8,8 @@ import Typography from '@material-ui/core/Typography';
 
 import ProtectedComponent from '../ProtectedComponent'
 
+import EasyDnsApiService from '../../services/EasyDnsApiService'
+
 class EditDnsRecordComponent extends ProtectedComponent {
     constructor(props) {
         super(props);
@@ -43,10 +45,37 @@ class EditDnsRecordComponent extends ProtectedComponent {
         this.setState({ ...record });
     }
 
-    saveRecord() {
-        // enviar para api
-        localStorage.removeItem('record');
-        this.props.history.push('/records')
+    async saveRecord() {
+
+        if (!this.state.name || !this.state.answer) {
+            alert('Preencha todos os campos obrigatórios')
+            return
+        }
+
+        try {
+
+            let record = {
+                recordName: this.state.name,
+                recordType: this.state.type,
+                ttl: this.state.ttl ? parseInt(this.state.ttl) : 0,
+                answer: this.state.answer
+            }
+
+            let statusCode = await EasyDnsApiService.editRecord(this.state.domain, record)
+
+            if (statusCode !== 204) {
+                alert('Não foi possível gravar o registro no servidor');
+                return
+            }
+
+            this.props.history.push('/records')
+            localStorage.removeItem('record');
+
+        }
+        catch (e) {
+            alert('Erro ao gravar registro')
+        }
+
     }
 
     onChange = (e) =>
@@ -67,7 +96,7 @@ class EditDnsRecordComponent extends ProtectedComponent {
                             ))
                         }
                     </Select>
-                    <TextField type="text" placeholder="record name without domain. Ex former host1" fullWidth margin="normal"
+                    <TextField onChange={this.onChange} type="text" placeholder="record name without domain. Ex former host1" fullWidth margin="normal"
                         name="name" value={this.state.name} />
                     <InputLabel id="type">Type</InputLabel>
                     <Select name="type" labelId="type" id="type-select" value={this.state.type}
@@ -78,9 +107,9 @@ class EditDnsRecordComponent extends ProtectedComponent {
                         <MenuItem value="NS">NS</MenuItem>
                         <MenuItem value="AAAA">AAAA</MenuItem>
                     </Select>
-                    <TextField type="text" placeholder="record ttl" fullWidth margin="normal"
+                    <TextField onChange={this.onChange} type="number" placeholder="record ttl" fullWidth margin="normal"
                         name="ttl" value={this.state.ttl} />
-                    <TextField type="text" placeholder="answer - If you are a CNAME you should not have the domain. Ex host2" fullWidth margin="normal"
+                    <TextField onChange={this.onChange} type="text" placeholder="answer - If you are a CNAME you should not have the domain. Ex host2" fullWidth margin="normal"
                         name="answer" value={this.state.answer} />
                     <Button variant="contained" color="primary" onClick={this.saveRecord}>Save</Button>
                 </form>
