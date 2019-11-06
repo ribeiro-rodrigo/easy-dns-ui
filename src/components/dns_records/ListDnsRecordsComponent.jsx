@@ -24,7 +24,7 @@ class ListDnsRecordsComponent extends ProtectedComponent {
         this.reloadRecordsList = this.reloadRecordsList.bind(this);
         this.addRecord = this.addRecord.bind(this);
         this.editRecord = this.editRecord.bind(this);
-        this.deleteRecord = this.deleteRecord.bind(this); 
+        this.deleteRecord = this.deleteRecord.bind(this);
     }
 
     async componentDidMount() {
@@ -33,7 +33,7 @@ class ListDnsRecordsComponent extends ProtectedComponent {
 
     async reloadRecordsList() {
         const zones = await EasyDnsApiService.findAllZones();
-        localStorage.setItem('zones',JSON.stringify(zones)); 
+        localStorage.setItem('zones', JSON.stringify(zones));
         this.setState({
             zones: zones
         })
@@ -43,20 +43,33 @@ class ListDnsRecordsComponent extends ProtectedComponent {
         this.props.history.push('/add-record')
     }
 
-    deleteRecord(zoneName,recordDeleted){
-        
-        //chamar api aqui 
-        
-        let zones = this.state.zones 
-        let zone = zones.filter(z => z.zone === zoneName).reduce((_, current) => current, null);
-        zone.records = zone.records.filter(record => record.name !== recordDeleted.name); 
-        this.setState({zones:zones}); 
+    async deleteRecord(zoneName, recordDeleted) {
+
+        try {
+
+            let responseStatus = await EasyDnsApiService.removeRecord(zoneName, recordDeleted.name);
+
+            if (responseStatus !== 204) {
+                alert('Não foi possível remover o registro do servidor DNS');
+                return
+            }
+
+            let zones = this.state.zones
+            let zone = zones.filter(z => z.zone === zoneName).reduce((_, current) => current, null);
+            zone.records = zone.records.filter(record => record.name !== recordDeleted.name);
+            this.setState({ zones: zones });
+
+        }
+        catch (e) {
+            alert('Erro ao tentar remover registro do servidor DNS.')
+        }
+
     }
 
-    editRecord(zoneName,record) { 
-        record.zone = zoneName 
+    editRecord(zoneName, record) {
+        record.zone = zoneName
         localStorage.removeItem('record');
-        localStorage.setItem('record',JSON.stringify(record))
+        localStorage.setItem('record', JSON.stringify(record))
         this.props.history.push('/edit-record');
     }
 
@@ -84,10 +97,10 @@ class ListDnsRecordsComponent extends ProtectedComponent {
                                     <TableCell align="right">{record.type}</TableCell>
                                     <TableCell align="right">{record.ttl}</TableCell>
                                     <TableCell align="right">{record.answer}</TableCell>
-                                    <TableCell align="right" onClick={() => this.editRecord(row.zone,record)}>
+                                    <TableCell align="right" onClick={() => this.editRecord(row.zone, record)}>
                                         <CreateIcon />
                                     </TableCell>
-                                    <TableCell align="right" onClick={() => this.deleteRecord(row.zone,record)}>
+                                    <TableCell align="right" onClick={() => this.deleteRecord(row.zone, record)}>
                                         <DeleteIcon />
                                     </TableCell>
                                 </TableRow>
