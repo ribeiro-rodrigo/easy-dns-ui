@@ -3,6 +3,8 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 
+import EasyDnsApiService from '../../services/EasyDnsApiService'
+
 class LoginComponent extends Component {
     constructor(props) {
         super(props);
@@ -12,23 +14,32 @@ class LoginComponent extends Component {
         }
 
         this.login = this.login.bind(this);
-        this.redirectToList = this.redirectToList.bind(this); 
+        this.redirectToList = this.redirectToList.bind(this);
 
-        if ( localStorage.getItem('token')){
-            this.redirectToList(); 
+        if (localStorage.getItem('token')) {
+            this.redirectToList();
         }
-        
+
     }
 
-    redirectToList(){
+    redirectToList() {
         window.location = '/records'
     }
 
-    login() {
-        //autenticar na api aqui
-        localStorage.setItem('token','token'); 
-        this.redirectToList()
-        
+    async login() {
+
+        try {
+
+            const response = await EasyDnsApiService.authUser(this.state.username, this.state.password)
+            console.log(response)
+            if (response.statusCode === 200) {
+                localStorage.setItem('token', response.content['access_token']);
+                this.redirectToList()
+            }
+        }
+        catch (e) {
+            alert('Erro ao realizar login')
+        }
     }
 
     onChange = (e) =>
