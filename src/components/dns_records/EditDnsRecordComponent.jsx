@@ -12,26 +12,35 @@ class EditDnsRecordComponent extends ProtectedComponent {
     constructor(props) {
         super(props);
         this.state = {
-            zone: '',
+            domain: '',
             name: '',
             type: '',
             ttl: '',
             answer: '',
-            message: null
+            message: null,
+            zones: []
         }
 
         this.saveRecord = this.saveRecord.bind(this);
         this.loadRecord = this.loadRecord.bind(this);
+        this.loadZones = this.loadZones.bind(this);
     }
 
     componentDidMount() {
+        this.loadZones()
+    }
+
+    loadZones() {
+        let zones = localStorage.getItem('zones');
+        zones = JSON.parse(zones);
+        this.setState({ domain: zones[0].zone, zones })
         this.loadRecord()
     }
 
     loadRecord() {
 
         let record = JSON.parse(localStorage.getItem('record'));
-        this.setState({ ...record, message: null });
+        this.setState({ ...record });
     }
 
     saveRecord() {
@@ -50,10 +59,13 @@ class EditDnsRecordComponent extends ProtectedComponent {
                 <Typography variant="h4" style={style}>Edit Record</Typography>
                 <form>
                     <InputLabel id="zone">Zone</InputLabel>
-                    <Select name="zone" labelId="zone" id="zone-select" value={this.state.zone}
+                    <Select name="domain" labelId="zone" id="zone-select" value={this.state.domain}
                         onChange={this.onChange} fullWidth>
-                        <MenuItem value="test.example.com">test.example.com</MenuItem>
-                        <MenuItem value="test2.example.com">test2.example.com</MenuItem>
+                        {
+                            this.state.zones.map(domain => (
+                                <MenuItem key={domain.zone} value={domain.zone}>{domain.zone}</MenuItem>
+                            ))
+                        }
                     </Select>
                     <TextField type="text" placeholder="record name without domain. Ex former host1" fullWidth margin="normal"
                         name="name" value={this.state.name} />
